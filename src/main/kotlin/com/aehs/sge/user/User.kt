@@ -18,5 +18,3 @@ class User (
             inverseJoinColumns =  [JoinColumn(name = "authority_id", referencedColumnName = "authority_id")]
         ) var authorities: MutableCollection<Authority>,
     @Id @Column(name = "user_id") @GeneratedValue(strategy = GenerationType.IDENTITY) var id: Long? = null)
-
-data class CreateUserRequest (@NotEmpty val name: String, @NotEmpty val email: String, @NotEmpty val password: String, @NotEmpty val authorities: List<String>)

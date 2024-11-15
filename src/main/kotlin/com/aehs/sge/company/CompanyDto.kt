@@ -8,3 +8,10 @@ data class CreateCompanyRequest(
     val companyType: CompanyType,
     val headId: Long?
 )
+
+class UpdateCompanyRequest(
+    val name: String,
+    val cnpj: String,
+    val phoneNumber: String,
+    val email: String,
+)

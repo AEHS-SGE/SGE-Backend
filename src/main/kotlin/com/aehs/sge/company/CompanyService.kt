@@ -5,7 +5,6 @@ import com.aehs.sge.exception.BadRequestException
 import com.aehs.sge.exception.ForbiddenException
 import com.aehs.sge.exception.NotFoundException
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
 
 @Service
@@ -18,7 +17,7 @@ class CompanyService(
         return companyRepository.findAll()
     }
 
-    fun findById(id: Long, authentication: Authentication): Company {
+    fun findById(id: Long): Company {
         val company = companyRepository.findByIdOrNull(id)
          // TODO perform checks to see if the authenticated user can see the company he's requesting data from.
         return company ?: throw NotFoundException("Company with id $id not found")
@@ -41,12 +40,12 @@ class CompanyService(
         return company.id!!
     }
 
-    fun update(companyId: Long, updateCompanyRequest: UpdateCompanyRequest, authentication: Authentication) {
+    fun update(companyId: Long, updateCompanyRequest: UpdateCompanyRequest, loggedUserCompanyId: Long) {
         val company = companyRepository.findByIdOrNull(companyId)
             ?: throw NotFoundException("Company with id $companyId not found")
 
-        if (!userCanUpdateCompany(company, authentication)) {
-            throw ForbiddenException("Company with id $companyId cannot be updated by the current user.")
+        if (!userCanUpdateCompany(company, loggedUserCompanyId)) {
+            throw ForbiddenException("Company with id $companyId cannot be updated by the current user")
         }
 
         company.name = updateCompanyRequest.name
@@ -61,8 +60,7 @@ class CompanyService(
         TODO("define how a user is deleted, logical vs physical removal")
     }
 
-    private fun userCanUpdateCompany(company: Company, authUser: Authentication): Boolean {
-        val loggedUserCompanyId = authService.getCompanyIdFromAuthentication(authUser)
+    private fun userCanUpdateCompany(company: Company, loggedUserCompanyId: Long): Boolean {
         val companyId = company.id!!
 
         return when {

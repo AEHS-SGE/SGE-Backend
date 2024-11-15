@@ -1,12 +1,10 @@
 package com.aehs.sge.user
 
-import com.aehs.sge.auth.AuthService
 import com.aehs.sge.auth.AuthorityRepository
 import com.aehs.sge.company.CompanyRepository
 import com.aehs.sge.exception.DuplicatedException
 import com.aehs.sge.exception.NotFoundException
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.security.core.Authentication
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
@@ -16,7 +14,6 @@ class UserService(
     private val passwordEncoder: PasswordEncoder,
     private val companyRepository: CompanyRepository,
     private val authorityRepository: AuthorityRepository,
-    private val authService: AuthService,
 ) {
 
     /**
@@ -24,36 +21,36 @@ class UserService(
      * If the company is a HEAD, also fetches users from the BRANCHES.
      * TODO add filter to check if users from the BRANCHES should also be returned.
      */
-    fun findAllFromCompany(authentication: Authentication): List<User> {
-        val companyId = authService.getCompanyIdFromAuthentication(authentication)
-        return userRepository.findAllByCompanyId(companyId)
+    fun findAllFromCompany(companyId: Long): List<UserResponse> {
+        return userRepository.findAllByCompanyId(companyId).map { UserResponse(it) }
     }
 
     /**
      * Finds a single user based on the provided id.
      */
-    fun findById(id: Long, authentication: Authentication): User {
-        val companyId = authService.getCompanyIdFromAuthentication(authentication)
+    fun findById(id: Long, companyId: Long): UserResponse {
         val user = userRepository.findByIdOrNull(id)
 
         if (user == null || user.company.id != companyId) {
             throw NotFoundException("User with id $id not found")
         } else {
-            return user
+            return UserResponse(user)
         }
     }
 
     /**
-     * Creates a new user and return the newly created user id.
+     * Creates a new user and return the newly created user's id.
      */
-    fun create(userRequest: CreateUserRequest, authentication: Authentication): Long  {
+    fun create(userRequest: CreateUserRequest, companyId: Long): Long  {
         val existingUser = userRepository.findByEmail(userRequest.email)
         if (existingUser != null) {
             throw DuplicatedException("This user already exists")
         }
 
-        val company = companyRepository.getReferenceById(authService.getCompanyIdFromAuthentication(authentication))
+        val company = companyRepository.getReferenceById(companyId)
+
         val authorities = userRequest.authorities.map { authority -> authorityRepository.getReferenceById(authority) }.toMutableList()
+
         var user = User(
             userRequest.name,
             userRequest.email,

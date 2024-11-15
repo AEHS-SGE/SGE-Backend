@@ -4,7 +4,7 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "company")
-class Company(
+class Company (
     @Column var name: String,
     @Column var cnpj: String,
     @Column(name = "phone_number") var phone: String,

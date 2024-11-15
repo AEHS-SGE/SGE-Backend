@@ -2,7 +2,6 @@ package com.aehs.sge.auth
 
 import com.aehs.sge.exception.NotFoundException
 import com.aehs.sge.user.User
-import com.aehs.sge.user.UserNotFoundException
 import com.aehs.sge.user.UserRepository
 import com.aehs.sge.user.UserService
 import org.springframework.security.core.Authentication
@@ -14,7 +13,6 @@ import java.time.temporal.ChronoUnit
 @Service
 class AuthService(
     private val jwtEncoder: JwtEncoder,
-    private val userService: UserService,
     private val userRepository: UserRepository
 ) {
     fun generateToken(authentication: Authentication): String{
