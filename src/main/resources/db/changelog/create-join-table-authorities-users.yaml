@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: 'Create join table for user x authorities'
+      author: gustavooliveira
+      changes:
+        - createTable:
+            tableName: user_authority
+            columns:
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: user_fk
+                    references: user_tb(user_id)
+              - column:
+                  name: authority_id
+                  type: varchar(20)
+                  constraints:
+                    foreignKeyName: authority_fk
+                    references: authority(authority_id)

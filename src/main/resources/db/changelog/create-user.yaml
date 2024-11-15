@@ -1,0 +1,35 @@
+databaseChangeLog:
+  - changeSet:
+      id: 'Create User table'
+      author: gustavooliveira
+      changes:
+        - createTable:
+            tableName: user_tb
+            columns:
+              - column:
+                  name: user_id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(100)
+                  remarks: 'The name of the user'
+              - column:
+                  name: email
+                  type: varchar(100)
+                  remarks: 'The email of the user'
+                  constraints:
+                    unique: true
+              - column:
+                  name: password
+                  type: varchar(100)
+                  remarks: 'The password of the user'
+              - column:
+                  name: company_id
+                  type: bigint
+                  remarks: 'The company that the user belongs to'
+                  constraints:
+                    foreignKeyName: company_fk
+                    referencedColumnNames: company(id)

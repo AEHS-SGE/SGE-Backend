@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/create-company.yaml
+  - include:
+      file: db/changelog/create-user.yaml
+  - include:
+      file: db/changelog/create-authority.yaml
+  - include:
+      file: db/changelog/create-join-table-authorities-users.yaml

@@ -1,0 +1,48 @@
+databaseChangeLog:
+  - changeSet:
+      id: 'Create company table'
+      author: gustavooliveira
+      changes:
+        - createTable:
+            tableName: company
+            columns:
+              - column:
+                  name: company_id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    unique: true
+              - column:
+                  name: name
+                  type: varchar(100)
+                  remarks: 'The name of the company'
+              - column:
+                  name: cnpj
+                  type: varchar(20)
+                  remarks: 'The CNPJ of the company'
+                  constraints:
+                    unique: true
+              - column:
+                  name: phone_number
+                  type: varchar(20)
+                  remarks: 'The phone number of the company'
+              - column:
+                  name: email
+                  type: varchar(100)
+                  remarks: 'The email of the company'
+                  constraints:
+                    unique: true
+              - column:
+                  name: company_type
+                  type: varchar(20)
+                  remarks: 'The company type, can be HEAD or BRANCH'
+              - column:
+                  name: head_id
+                  type: bigint
+                  remarks: 'If the company type is BRANCH, this will point to the company HEAD'
+                  constraints:
+                    nullable: true
+        - sql:
+            sql: "alter table company add constraint check_is_type_valid CHECK (company_type in ('HEAD', 'BRANCH'))"
+            # add check to ensure that the type column only allow the head and branch types
