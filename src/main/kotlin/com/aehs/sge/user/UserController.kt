@@ -1,6 +1,7 @@
 package com.aehs.sge.user
 
 import com.aehs.sge.auth.AuthService
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
@@ -22,7 +23,7 @@ class UserController(val userService: UserService, val authService: AuthService)
     }
 
     @PostMapping
-    fun createUser(@RequestBody userRequest: CreateUserRequest, authentication: Authentication): ResponseEntity<Long> {
+    fun createUser(@RequestBody @Valid userRequest: CreateUserRequest, authentication: Authentication): ResponseEntity<Long> {
         val userId = userService.create(userRequest, authService.getCompanyIdFromAuthentication(authentication))
 
         return ResponseEntity.ok(userId)

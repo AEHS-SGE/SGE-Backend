@@ -1,6 +1,7 @@
 package com.aehs.sge.company
 
 import com.aehs.sge.auth.AuthService
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
@@ -22,7 +23,7 @@ class CompanyController(val companyService: CompanyService, val authService: Aut
     }
 
     @PostMapping
-    fun createCompany(@RequestBody createCompanyRequest: CreateCompanyRequest): ResponseEntity<Long> {
+    fun createCompany(@RequestBody @Valid createCompanyRequest: CreateCompanyRequest): ResponseEntity<Long> {
         val companyId = companyService.create(createCompanyRequest)
 
         return ResponseEntity.ok(companyId)

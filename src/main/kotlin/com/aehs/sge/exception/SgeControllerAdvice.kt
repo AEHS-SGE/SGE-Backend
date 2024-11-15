@@ -3,8 +3,12 @@ package com.aehs.sge.exception
 import org.springframework.http.HttpStatus
 import org.springframework.http.ProblemDetail
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.FieldError
+import org.springframework.validation.ObjectError
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import java.util.function.Consumer
 
 @RestControllerAdvice
 class SgeControllerAdvice {
@@ -36,4 +40,21 @@ class SgeControllerAdvice {
         problemDetail.title = "Duplicated entity"
         return ResponseEntity.status(HttpStatus.CONFLICT).body(problemDetail)
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun handleInvalidArgumentsException(ex: MethodArgumentNotValidException): ResponseEntity<ProblemDetail> {
+        val errors: MutableList<ErrorField> = ArrayList()
+        ex.bindingResult.allErrors.forEach(Consumer { error: ObjectError ->
+            val field = (error as FieldError).field
+            val message = error.getDefaultMessage()
+            errors.add(ErrorField(field, message!!))
+        })
+
+        val problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.message)
+        problemDetail.title = "Invalid arguments"
+        problemDetail.properties = mapOf("errors" to errors)
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(problemDetail)
+    }
 }
+
+data class ErrorField(val field: String, val message: String)

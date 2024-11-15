@@ -32,7 +32,7 @@ class TestDataSeeder(
         val company = companyRepository.save(
             Company(
                 "My company",
-                "000.000/0001-01",
+                "00.623.904/0001-73",
                 "00000000",
                 "company@email.com",
                 CompanyType.HEAD

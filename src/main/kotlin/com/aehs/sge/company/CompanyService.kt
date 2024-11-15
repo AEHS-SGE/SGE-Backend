@@ -1,6 +1,5 @@
 package com.aehs.sge.company
 
-import com.aehs.sge.auth.AuthService
 import com.aehs.sge.exception.BadRequestException
 import com.aehs.sge.exception.ForbiddenException
 import com.aehs.sge.exception.NotFoundException
@@ -8,10 +7,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
-class CompanyService(
-    private val companyRepository: CompanyRepository,
-    private val authService: AuthService,
-) {
+class CompanyService(private val companyRepository: CompanyRepository) {
     // TODO check if this is necessary and if it should be paginated
     fun findAll(): List<Company> {
         return companyRepository.findAll()
